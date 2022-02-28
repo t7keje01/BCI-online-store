@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "react-scripts start",
-    "start": "serve -s build",
+    "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build"
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +22,6 @@
     "passport": "^0.5.2",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
-    "serve": "^13.0.2",
     "uuid": "^8.3.2"
   },
   "engines": {
