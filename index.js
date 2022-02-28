@@ -5,7 +5,7 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const secrets = require('./secret-key-stash,json');
+const secrets = require('./secret-keys-stash.json');
 const app = express();
 const port = 3000;
 
@@ -165,5 +165,3 @@ app.delete('/products/:productId', passport.authenticate('jwt', { session: false
         res.sendStatus(202);
     }
 })
-
-
