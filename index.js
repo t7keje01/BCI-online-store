@@ -6,8 +6,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const secrets = require('./secret-keys-stash.json');
+const cloudinary = require('cloudinary');
+const cloudinaryStorage = require('multer-storage-cloudinary');
+const multer = require('multer');
+
+
 const app = express();
-const port = 3000;
 
 const products = [
     {
@@ -45,6 +49,14 @@ const products = [
 ];
 
 const users = [];
+
+const storage = cloudinaryStorage ({
+    cloudinary: cloudinary,
+    folder: '',
+    allowedFormats: ['jpg', 'png'],
+});
+
+var parser = multer({ storage: storage });
 
 app.use(bodyParser.json());
 
@@ -119,17 +131,34 @@ app.get('/products', (req, res) => {
             return;
         }
         else if (product.postingDate === postingDate) {
-            res.json(prodect);
+            res.json(product);
             return;
         }
         else {
-            res.status(404)
+            res.json(products);
         }
     }
 })
 
-app.post('/products', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.post('/products', passport.authenticate('jwt', { session: false }), parser.single('image'), (req, res) => {
     
+    products = {
+        id: uuidv4(),
+        title: req.body.titl,
+        description: req.body.description,
+        category: req.body.category,
+        location: req.body.location,
+        images: req.file,
+        askingPrice: req.body.askingPrice,
+        postingDate: req.body.postingDate,
+        deliveryType: {
+            shipping: req.body.deliveryType.shipping,
+            pickup: req.body.deliveryType.pickup
+        },
+        sellerName: req.body.sellerName,
+        sellerNumber: req.body.sellerNumber
+    }
+    res.sendStatus(201);
 })
 
 app.put('/products/:productId', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -152,7 +181,6 @@ app.put('/products/:productId', passport.authenticate('jwt', { session: false })
     else {
         res.sendStatus(404);
     }
-
 })
 
 app.delete('/products/:productId', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -166,6 +194,6 @@ app.delete('/products/:productId', passport.authenticate('jwt', { session: false
     }
 })
 
-app.listen(port, () => {
-    console.log(`Example app listening on post ${port}`)
-})
+app.listen(process.env.PORT || 3000, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+  });
