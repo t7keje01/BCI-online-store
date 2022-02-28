@@ -165,3 +165,7 @@ app.delete('/products/:productId', passport.authenticate('jwt', { session: false
         res.sendStatus(202);
     }
 })
+
+app.listen(port, () => {
+    console.log(`Example app listening on post ${port}`)
+})
